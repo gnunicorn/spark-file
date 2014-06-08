@@ -1,17 +1,18 @@
 {
-  "name": "opentabs",
+  "name": "spark-file",
   "version": "1.0.12",
   "type": "app",
   "dependencies": {
-    "hoodie-server": "0.9.15",
-    "hoodie-plugin-appconfig": "~0.1.0",
-    "hoodie-plugin-email": "~0.1.1",
-    "hoodie-plugin-users": "0.1.0"
+    "hoodie-plugin-appconfig": "~0.2.1",
+    "hoodie-plugin-email": "~0.1.4",
+    "hoodie-plugin-users": "0.1.1",
+    "hoodie-server": "0.9.29",
+    "moment": "^2.6.0"
   },
-  "subdomain": "hoodie-opentabs",
+  "subdomain": "hoodie-spark-file",
   "domains": [
-    "admin.hoodie-opentabs.jit.su",
-    "couch.hoodie-opentabs.jit.su"
+    "admin.hoodie-spark-file.jit.su",
+    "couch.hoodie-spark-file.jit.su"
   ],
   "scripts": {
     "start": "node node_modules/hoodie-server/bin/start"
