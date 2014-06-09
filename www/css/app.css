@@ -81,6 +81,16 @@ button {
 	text-rendering: optimizeLegibility;
 }
 
+#sparkapp.expanded li {
+	opacity: 0.5;
+}
+
+#sparkapp.expanded li.expanded {
+	opacity: 1;
+	border: 1px solid #EDEDED;
+	box-shadow: 2px 2px 2px #DDD
+}
+
 /*#header {
 	padding-top: 15px;
 	border-radius: inherit;
@@ -157,18 +167,13 @@ button {
 #spark-list li {
 	position: relative;
 	font-size: 20px;
-	/*padding-left: 5px;*/
-	/*border-bottom: 1px dotted #ccc;*/
+	padding: 1em;
 	margin-bottom: 2em;
 }
 
 #spark-list li .edit-action,
 #spark-list li .expand-action {
 	display: none;
-}
-
-#spark-list li.editing {
-	padding-left: 0;
 }
 
 #spark-list li.editing .edit-action,
@@ -179,11 +184,6 @@ button {
 
 #spark-list li:last-child {
 	border-bottom: none;
-}
-
-#spark-list li.editing {
-	border-bottom: none;
-	padding: 0;
 }
 
 #spark-list li.editing .edit {
@@ -240,10 +240,19 @@ button {
 	display: none;
 }
 
-#spark-list li .actions {
+#spark-list li .actions,
+#spark-list li.editing.expanded .actions {
+	display: none;
+}
+
+#spark-list li.expanded .actions {
+	display: block;
 	position: absolute;
-	right: 10px;
-	top: 20%;
+	padding: 0.5em;
+	top: -8px;
+	right: 5px;
+	background: none repeat scroll 0% 0% #CCC;
+	color: #ededed;
 }
 
 

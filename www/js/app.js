@@ -71,38 +71,23 @@ var SparkItem = React.createClass({
   },
 
   expand: function() {
-    this.setState({"expanded": !this.state.expanded});
+    this.props.onExpand(this.props.spark)
   },
 
   edit: function() {
-    this.setState({"editing": true});
-    this.refs.editField.getDOMNode().focus();
-  },
-
-  cancel: function() {
-    this.setState({"editing": false});
-    return false;
-  },
-
-  save: function(spark, text) {
-    spark.set('text', text);
-    this.setState({editing: null});
-  },
-
-  handleChange: function(event){
-    this.setState({curText: event.target.value});
+    this.props.onEdit(this.props.spark)
   },
 
   render: function() {
     var classes = Utils.stringifyObjKeys({
-      expanded: this.state.expanded, editing: this.state.editing
+      expanded: this.props.expanded, editing: this.props.editing
     });
     return (
       <li className={classes}>
         <div className="view">
           <span className="when">{moment(this.props.spark.get("when")).fromNow()}</span>
           <div className="spark" onClick={this.expand} dangerouslySetInnerHTML={{
-            __html: markdown.toHTML(this.props.spark.get('text'))
+            __html: markdown.toHTML(this.props.editing ? this.props.curText : this.props.spark.get('text'))
           }}>
           </div>
           <div className="actions">
@@ -114,25 +99,6 @@ var SparkItem = React.createClass({
             </button>
           </div>
         </div>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <textarea
-              ref="editField"
-              className="edit"
-              defaultValue={this.state.curText}
-              onChange={this.handleChange}
-              autoFocus="autofocus" />
-            <pre ref="editClone" className='expanding-clone'>{this.state.curText}<br/></pre>
-          </div>
-          <div className="actions">
-            <button className="edit-action" onClick={this.handleSubmit}>
-              <span className="fa fa-2x fa-check"></span>
-            </button>
-            <button className="edit-action" onClick={this.cancel}>
-              <span className="fa fa-2x fa-times"></span>
-            </button>
-          </div>
-        </form>
       </li>
     );
   }
@@ -166,7 +132,7 @@ var BackboneMixin = {
 var SparkApp = React.createClass({
   mixins: [BackboneMixin],
   getInitialState: function() {
-    return {editing: null, expanded: false};
+    return {editing: null, expanded: null};
   },
 
   componentDidMount: function() {
@@ -206,6 +172,14 @@ var SparkApp = React.createClass({
     });
   },
 
+  onEdit: function(spark){
+    this.setState({editing: spark});
+  },
+
+  onExpand: function(spark){
+    this.setState({expanded: spark});
+  },
+
   render: function() {
     var main = null,
         footer = null,
@@ -213,6 +187,10 @@ var SparkApp = React.createClass({
           return (
             <SparkItem
               key={spark.id}
+              onEdit={this.onEdit}
+              onExpand={this.onExpand}
+              expanded={this.state.expanded == spark}
+              editing={this.state.editing == spark}
               spark={spark} />
           );
         }, this);
@@ -227,9 +205,13 @@ var SparkApp = React.createClass({
       );
     }
 
+    var classNames = Utils.stringifyObjKeys({
+      expanded: this.state.expanded != null, editing: this.state.editing != null
+    });
+
     return (
       <div>
-        <section id="sparkapp">
+        <section id="sparkapp" className={classNames}>
           <header id="header">
             <h1 className="app-title">sparks*</h1>
             <form onSubmit={this.handleSubmit}>
