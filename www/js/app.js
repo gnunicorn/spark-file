@@ -101,9 +101,10 @@ var SparkItem = React.createClass({
       <li className={classes}>
         <div className="view">
           <span className="when">{moment(this.props.spark.get("when")).fromNow()}</span>
-          <p className="spark" onClick={this.expand}>
-            {this.props.spark.get('text')}
-          </p>
+          <div className="spark" onClick={this.expand} dangerouslySetInnerHTML={{
+            __html: markdown.toHTML(this.props.spark.get('text'))
+          }}>
+          </div>
           <div className="actions">
             <button className="expand-action" onClick={this.edit}>
               <span className="fa fa-2x fa-pencil-square-o"></span>
