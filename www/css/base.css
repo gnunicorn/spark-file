@@ -13,6 +13,7 @@ button {
 	vertical-align: baseline;
 	font-family: inherit;
 	color: inherit;
+	cursor: pointer;
 	-webkit-appearance: none;
 	/*-moz-appearance: none;*/
 	-ms-appearance: none;
@@ -110,6 +111,7 @@ body {
 }
 
 #new-spark,
+.expanding-clone,
 .edit {
 	position: relative;
 	margin: 0;
@@ -151,15 +153,31 @@ body {
 #spark-list {
 	margin: 0;
 	padding: 0;
-	padding-left: 50px;
+	padding-left: 43px;
 	list-style: none;
 }
 
 #spark-list li {
 	position: relative;
 	font-size: 20px;
+	padding-left: 5px;
 	border-bottom: 1px dotted #ccc;
 }
+
+#spark-list li .edit-action,
+#spark-list li .expand-action {
+	display: none;
+}
+
+#spark-list li.editing {
+	padding-left: 0;
+}
+
+#spark-list li.editing .edit-action,
+#spark-list li.expanded .expand-action {
+	display: inline-block;
+}
+
 
 #spark-list li:last-child {
 	border-bottom: none;
@@ -172,9 +190,23 @@ body {
 
 #spark-list li.editing .edit {
 	display: block;
-	width: 506px;
-	padding: 13px 17px 12px 17px;
-	margin: 0 0 0 43px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    resize: none;,
+    overflow: auto;
+    padding-right: 90px;
+}
+
+#spark-list li.editing .expanding-clone {
+    display: block;
+    border: 0 solid;
+    visibility: hidden;
+    word-wrap: normal;
+    white-space: pre-wrap;
+    min-height: 3em;
+    padding-right: 90px;
 }
 
 #spark-list li.editing .view {
@@ -193,6 +225,7 @@ body {
 	overflow: hidden;
 	margin-top: 0;
 	height: 1.2em;
+    padding-right: 90px;
 	-webkit-transition: color 0.4s;
 	-moz-transition: color 0.4s;
 	-ms-transition: color 0.4s;
@@ -200,49 +233,21 @@ body {
 	transition: color 0.4s;
 }
 
-#spark-list li.expanded p {	
+#spark-list li.expanded p {
 	height: auto;
 }
 
-#spark-list li .destroy {
+#spark-list li .edit,
+#spark-list li .expanding-clone {
 	display: none;
+}
+
+#spark-list li .actions {
 	position: absolute;
-	top: 0;
 	right: 10px;
-	bottom: 0;
-	width: 40px;
-	height: 40px;
-	margin: auto 0;
-	font-size: 22px;
-	color: #a88a8a;
-	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
-	-ms-transition: all 0.2s;
-	-o-transition: all 0.2s;
-	transition: all 0.2s;
+	top: 20%;
 }
 
-#spark-list li .destroy:hover {
-	text-shadow: 0 0 1px #000,
-				 0 0 10px rgba(199, 107, 107, 0.8);
-	-webkit-transform: scale(1.3);
-	-moz-transform: scale(1.3);
-	-ms-transform: scale(1.3);
-	-o-transform: scale(1.3);
-	transform: scale(1.3);
-}
-
-#spark-list li .destroy:after {
-	content: '✖';
-}
-
-#spark-list li.expanded .destroy {
-	display: block;
-}
-
-#spark-list li .edit {
-	display: none;
-}
 
 #spark-list li.editing:last-child {
 	margin-bottom: -1px;

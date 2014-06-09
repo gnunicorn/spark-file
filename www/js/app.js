@@ -67,11 +67,11 @@ var SparkItem = React.createClass({
     return false;
   },
   getInitialState: function() {
-    return {expanded: false, editing: false};
+    return {expanded: false, editing: false, curText: this.props.spark.get('text')};
   },
 
   expand: function() {
-    this.setState({"expanded": true});
+    this.setState({"expanded": !this.state.expanded});
   },
 
   edit: function() {
@@ -81,6 +81,7 @@ var SparkItem = React.createClass({
 
   cancel: function() {
     this.setState({"editing": false});
+    return false;
   },
 
   save: function(spark, text) {
@@ -88,6 +89,9 @@ var SparkItem = React.createClass({
     this.setState({editing: null});
   },
 
+  handleChange: function(event){
+    this.setState({curText: event.target.value});
+  },
 
   render: function() {
     var classes = Utils.stringifyObjKeys({
@@ -96,29 +100,37 @@ var SparkItem = React.createClass({
     return (
       <li className={classes}>
         <div className="view">
-          <span className="when">{moment(this.props.spark.when).fromNow()}</span>
+          <span className="when">{moment(this.props.spark.get("when")).fromNow()}</span>
           <p className="spark" onClick={this.expand}>
             {this.props.spark.get('text')}
           </p>
-          <button onClick={this.edit}>
-            <span className="fa fa-pencil-square-o"></span>
-          </button>
-          <button onClick={this.props.onDestroy}>
-            <span className="fa fa-trash-o"></span>
-          </button>
+          <div className="actions">
+            <button className="expand-action" onClick={this.edit}>
+              <span className="fa fa-2x fa-pencil-square-o"></span>
+            </button>
+            <button className="expand-action" onClick={this.props.onDestroy}>
+              <span className="fa fa-2x fa-trash-o"></span>
+            </button>
+          </div>
         </div>
         <form onSubmit={this.handleSubmit}>
-          <textarea
-            ref="editField"
-            className="edit"
-            defaultValue={this.props.spark.get('text')}
-            autoFocus="autofocus" />
-          <button onClick={this.handleSubmit}>
-            <span className="fa fa-check"></span>
-          </button>
-          <button onClick={this.cancel}>
-            <span className="fa fa-times"></span>
-          </button>
+          <div>
+            <textarea
+              ref="editField"
+              className="edit"
+              defaultValue={this.state.curText}
+              onChange={this.handleChange}
+              autoFocus="autofocus" />
+            <pre ref="editClone" className='expanding-clone'>{this.state.curText}<br/></pre>
+          </div>
+          <div className="actions">
+            <button className="edit-action" onClick={this.handleSubmit}>
+              <span className="fa fa-2x fa-check"></span>
+            </button>
+            <button className="edit-action" onClick={this.cancel}>
+              <span className="fa fa-2x fa-times"></span>
+            </button>
+          </div>
         </form>
       </li>
     );
