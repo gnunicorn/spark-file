@@ -244,14 +244,7 @@ var SparkApp = React.createClass({
           {footer}
         </section>
         <footer id="info">
-          <p>Double-click to edit a spark</p>
-          <p>
-            Created by{' '}
-            <a href="http://github.com/svnlto/">svnlto</a>
-            based on the work of
-            <a href="http://github.com/petehunt/">petehunt</a>
-          </p>
-          <p>Part of{' '}<a href="http://sparkmvc.com">sparkMVC</a></p>
+          <p>Inspired by <a href="https://medium.com/the-writers-room/the-spark-file-8d6e7df7ae58">Steven Johnson`s "The Spark File" </a></p>
         </footer>
       </div>
     );
