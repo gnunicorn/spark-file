@@ -54,22 +54,29 @@ var Utils = {
 
 // Begin React stuff
 
-var SparkItem = React.createClass({
-  handleSubmit: function(event) {
-    var val = this.refs.editField.getDOMNode().value.trim();
-    if (val) {
-      this.props.spark.set({text: val, last_edit: moment()});
-      this.props.spark.save();
-      this.setState({"editing": false});
-    } else {
-      this.props.onDestroy();
-    }
-    return false;
+var Editor = React.createClass({
+  onChange: function(ev){
+    this.props.onChange(ev.target.value);
   },
-  getInitialState: function() {
-    return {expanded: false, editing: false, curText: this.props.spark.get('text')};
-  },
+  render: function(){
+    return (<div id="editor">
+              <textarea
+                onChange={this.onChange}
+                defaultValue={this.props.editText} />
+              <div className="actions">
+            <button className="expand-action" onClick={this.props.onSave}>
+              <span className="fa fa-2x fa-check-circle "></span>
+            </button>
+            <button className="expand-action" onClick={this.props.onClose}>
+              <span className="fa fa-2x fa-times-circle-o"></span>
+            </button>
+              </div>
+            </div>
+      );
+  }
+});
 
+var SparkItem = React.createClass({
   expand: function() {
     this.props.onExpand(this.props.spark)
   },
@@ -87,7 +94,7 @@ var SparkItem = React.createClass({
         <div className="view">
           <span className="when">{moment(this.props.spark.get("when")).fromNow()}</span>
           <div className="spark" onClick={this.expand} dangerouslySetInnerHTML={{
-            __html: markdown.toHTML(this.props.editing ? this.props.curText : this.props.spark.get('text'))
+            __html: markdown.toHTML(this.props.editing ? this.props.editText : this.props.spark.get('text'))
           }}>
           </div>
           <div className="actions">
@@ -132,7 +139,7 @@ var BackboneMixin = {
 var SparkApp = React.createClass({
   mixins: [BackboneMixin],
   getInitialState: function() {
-    return {editing: null, expanded: null};
+    return {editing: null, expanded: null, editText: ""};
   },
 
   componentDidMount: function() {
@@ -144,7 +151,7 @@ var SparkApp = React.createClass({
     // If saving were expensive we'd listen for mutation events on Backbone and
     // do this manually. however, since saving isn't expensive this is an
     // elegant way to keep it reactively up-to-date.
-    this.props.spark.forEach(function(spark) {
+    this.props.sparks.forEach(function(spark) {
       spark.save();
     });
   },
@@ -172,8 +179,22 @@ var SparkApp = React.createClass({
     });
   },
 
+  onTextChange: function (new_val) {
+    this.setState({editText: new_val});
+  },
+
+  onEditClose: function(){
+    this.setState({"editing": null});
+  },
+
+  onEditSave: function(){
+    this.state.editing.set("text", this.state.editText);
+    this.state.editing.save();
+    this.setState({"editing": null});
+  },
+
   onEdit: function(spark){
-    this.setState({editing: spark});
+    this.setState({editing: spark, editText: spark.get("text")});
   },
 
   onExpand: function(spark){
@@ -183,11 +204,13 @@ var SparkApp = React.createClass({
   render: function() {
     var main = null,
         footer = null,
+        editor = null,
         sparkItems = this.props.sparks.map(function(spark) {
           return (
             <SparkItem
               key={spark.id}
               onEdit={this.onEdit}
+              editText={this.state.editText}
               onExpand={this.onExpand}
               expanded={this.state.expanded == spark}
               editing={this.state.editing == spark}
@@ -203,6 +226,17 @@ var SparkApp = React.createClass({
           </ul>
         </section>
       );
+    }
+
+    if (this.state.editing){
+      editor = (
+            <Editor
+              onChange={this.onTextChange}
+              editText={this.state.editText}
+              onClose={this.onEditClose}
+              onSave={this.onEditSave}
+              spark={this.state.editing} />
+        );
     }
 
     var classNames = Utils.stringifyObjKeys({
@@ -224,6 +258,7 @@ var SparkApp = React.createClass({
           </header>
           {main}
           {footer}
+          {editor}
         </section>
         <footer id="info">
           <p>Inspired by <a href="https://medium.com/the-writers-room/the-spark-file-8d6e7df7ae58">Steven Johnson`s "The Spark File" </a></p>
