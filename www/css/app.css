@@ -208,7 +208,17 @@ button {
 	display: none;
 }
 
-#editor .actions, 
+#startNew {
+	display: block;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 1em;
+    background: white;
+    z-index: 100;
+}
+
+#editor .actions,
 #spark-list li.expanded .actions {
 	display: block;
 	position: absolute;

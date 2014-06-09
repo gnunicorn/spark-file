@@ -80,6 +80,9 @@ var SparkItem = React.createClass({
   expand: function() {
     this.props.onExpand(this.props.spark)
   },
+  destroy: function() {
+    confirm("Are you sure you want to delete that spark?") && this.props.spark.destroy();
+  },
 
   edit: function() {
     this.props.onEdit(this.props.spark)
@@ -90,10 +93,10 @@ var SparkItem = React.createClass({
       expanded: this.props.expanded, editing: this.props.editing
     });
     return (
-      <li className={classes}>
+      <li className={classes} onClick={this.expand} >
         <div className="view">
           <span className="when">{moment(this.props.spark.get("when")).fromNow()}</span>
-          <div className="spark" onClick={this.expand} dangerouslySetInnerHTML={{
+          <div className="spark" dangerouslySetInnerHTML={{
             __html: markdown.toHTML(this.props.editing ? this.props.editText : this.props.spark.get('text'))
           }}>
           </div>
@@ -101,7 +104,7 @@ var SparkItem = React.createClass({
             <button className="expand-action" onClick={this.edit}>
               <span className="fa fa-2x fa-pencil-square-o"></span>
             </button>
-            <button className="expand-action" onClick={this.props.onDestroy}>
+            <button className="expand-action" onClick={this.destroy}>
               <span className="fa fa-2x fa-trash-o"></span>
             </button>
           </div>
@@ -144,7 +147,6 @@ var SparkApp = React.createClass({
 
   componentDidMount: function() {
     this.props.sparks.fetch();
-    this.refs.newField.getDOMNode().focus();
   },
 
   componentDidUpdate: function() {
@@ -158,25 +160,6 @@ var SparkApp = React.createClass({
 
   getBackboneModels: function() {
     return [this.props.sparks];
-  },
-
-  handleSubmit: function(event) {
-    event.preventDefault();
-    var val = this.refs.newField.getDOMNode().value.trim();
-    if (val) {
-      this.props.sparks.create({
-        text: val,
-        when: moment(),
-        last_edit: moment()
-      });
-      this.refs.newField.getDOMNode().value = '';
-    }
-  },
-
-  clearCompleted: function() {
-    this.props.sparks.completed().forEach(function(spark) {
-      spark.destroy();
-    });
   },
 
   onTextChange: function (new_val) {
@@ -261,20 +244,13 @@ var SparkApp = React.createClass({
 
     return (
       <div>
+        {editor}
         <section id="sparkapp" className={classNames}>
           <header id="header">
             <h1 className="app-title">sparks*</h1>
-            <form onSubmit={this.handleSubmit}>
-              <input
-                ref="newField"
-                id="new-spark"
-                placeholder="record your spark"
-              />
-            </form>
           </header>
           {main}
           {footer}
-          {editor}
         </section>
         <footer id="info">
           <p>Inspired by <a href="https://medium.com/the-writers-room/the-spark-file-8d6e7df7ae58">Steven Johnson`s "The Spark File" </a></p>
