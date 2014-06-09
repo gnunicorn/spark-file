@@ -188,13 +188,22 @@ var SparkApp = React.createClass({
   },
 
   onEditSave: function(){
-    this.state.editing.set("text", this.state.editText);
-    this.state.editing.save();
+    if (!this.state.editText) {
+      this.state.editing.destroy();
+    } else{
+      this.state.editing.set("text", this.state.editText);
+      this.state.editing.save();
+    }
     this.setState({"editing": null});
   },
 
   onEdit: function(spark){
     this.setState({editing: spark, editText: spark.get("text")});
+  },
+
+  startNew: function(){
+    var spark = this.props.sparks.create({text: "#", when: moment()});
+    this.onEdit(spark);
   },
 
   onExpand: function(spark){
@@ -237,6 +246,13 @@ var SparkApp = React.createClass({
               onSave={this.onEditSave}
               spark={this.state.editing} />
         );
+    } else {
+      editor = (
+          <button id="startNew"
+            onClick={this.startNew}
+          > <span className="fa fa-plus-circle"></span> Add a spark
+          </button>
+        )
     }
 
     var classNames = Utils.stringifyObjKeys({
