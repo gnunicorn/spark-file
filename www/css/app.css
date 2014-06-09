@@ -21,7 +21,7 @@ button {
 	appearance: none;
 }
 
-body {
+/*body {
 	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	line-height: 1.4em;
 	background: #eaeaea url('bg.png');
@@ -33,20 +33,20 @@ body {
 	-ms-font-smoothing: antialiased;
 	-o-font-smoothing: antialiased;
 	font-smoothing: antialiased;
-}
+}*/
 
 #sparkapp {
-	background: #fff;
-	background: rgba(255, 255, 255, 0.9);
-	margin: 130px 0 40px 0;
-	border: 1px solid #ccc;
+/*	background: #fff;
+	background: rgba(255, 255, 255, 0.9);*/
+	margin: 10px 0 40px 0;
+	/*border: 1px solid #ccc;*/
 	position: relative;
-	border-top-left-radius: 2px;
+/*	border-top-left-radius: 2px;
 	border-top-right-radius: 2px;
 	box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2),
-				0 25px 50px 0 rgba(0, 0, 0, 0.15);
+				0 25px 50px 0 rgba(0, 0, 0, 0.15);*/
 }
-
+/*
 #sparkapp:before {
 	content: '';
 	border-left: 1px solid #f5d6d6;
@@ -56,7 +56,7 @@ body {
 	top: 0;
 	left: 40px;
 	height: 100%;
-}
+}*/
 
 #sparkapp input::-webkit-input-placeholder {
 	font-style: italic;
@@ -67,13 +67,10 @@ body {
 	color: #a9a9a9;
 }
 
-#sparkapp h1 {
-	position: absolute;
-	top: -120px;
-	width: 100%;
+#sparkapp header h1 {
+	text-align: center;
 	font-size: 70px;
 	font-weight: bold;
-	text-align: center;
 	color: #b3b3b3;
 	color: rgba(255, 255, 255, 0.3);
 	text-shadow: -1px -1px rgba(0, 0, 0, 0.2);
@@ -84,7 +81,7 @@ body {
 	text-rendering: optimizeLegibility;
 }
 
-#header {
+/*#header {
 	padding-top: 15px;
 	border-radius: inherit;
 }
@@ -108,7 +105,7 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#9d8b83', EndColorStr='#847670');
 	border-top-left-radius: 1px;
 	border-top-right-radius: 1px;
-}
+}*/
 
 #new-spark,
 .expanding-clone,
@@ -151,17 +148,18 @@ body {
 	border-top: 1px dotted #adadad;
 }
 #spark-list {
-	margin: 0;
-	padding: 0;
-	padding-left: 43px;
+	margin: 0 auto;
 	list-style: none;
+    width: 80%;
+    max-width: 950px;
 }
 
 #spark-list li {
 	position: relative;
 	font-size: 20px;
-	padding-left: 5px;
-	border-bottom: 1px dotted #ccc;
+	/*padding-left: 5px;*/
+	/*border-bottom: 1px dotted #ccc;*/
+	margin-bottom: 2em;
 }
 
 #spark-list li .edit-action,

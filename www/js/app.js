@@ -231,7 +231,7 @@ var SparkApp = React.createClass({
       <div>
         <section id="sparkapp">
           <header id="header">
-            <h1>sparks</h1>
+            <h1 className="app-title">sparks*</h1>
             <form onSubmit={this.handleSubmit}>
               <input
                 ref="newField"
