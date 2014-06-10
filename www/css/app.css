@@ -44,7 +44,6 @@ button {
     border-top: 2px solid #eee;
     overflow-y: scroll;
 }
-}
 
 #sparkapp {
 	margin: 10px 0 40px 0;
@@ -73,11 +72,13 @@ button {
 	text-rendering: optimizeLegibility;
 }
 
-#sparkapp.expanded li {
+#sparkapp.expanded li.spark-item,
+#sparkapp.editing li.spark-item {
 	opacity: 0.5;
 }
 
-#sparkapp.expanded li.expanded {
+#sparkapp.expanded li.expanded,
+#sparkapp.editing li.editing {
 	opacity: 1;
 	border: 1px solid #EDEDED;
 	box-shadow: 2px 2px 2px #DDD
@@ -135,6 +136,7 @@ button {
 	font-size: 20px;
 	padding: 1em;
 	margin-bottom: 2em;
+	line-height: 28px;
 }
 
 #spark-list li.spark-item .edit-action,

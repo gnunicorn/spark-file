@@ -15,9 +15,18 @@ var Spark = Backbone.Model.extend({
     last_edit: null
   },
 
+  cook: function(new_val){
+    var text = new_val || this.get("text");
+    this.set("cooked", markdown.toHTML(text));
+  },
+
   initialize: function() {
     if(!this.has('when')) {
         this.set('when', moment());
+    }
+
+    if (!this.has("cooked")){
+      this.cook();
     }
   }
 });
@@ -62,7 +71,7 @@ var Editor = React.createClass({
     return (<div id="editor">
               <textarea
                 onChange={this.onChange}
-                defaultValue={this.props.editText} />
+                value={this.props.editText} />
               <div className="actions">
                 <button className="expand-action" onClick={this.props.onSave}>
                   <span className="fa fa-2x fa-check-circle "></span>
@@ -90,14 +99,16 @@ var SparkItem = React.createClass({
 
   render: function() {
     var classes = Utils.stringifyObjKeys({
-      "spark-item": true, expanded: this.props.expanded, editing: this.props.editing
+      "spark-item": true,
+      expanded: this.props.expanded,
+      editing: this.props.editing
     });
     return (
-      <li className={classes} onClick={this.expand} >
+      <li id={this.props.spark.get("id")} className={classes} onClick={this.expand} >
         <div className="view">
           <span className="when">{moment(this.props.spark.get("when")).fromNow()}</span>
           <div className="spark" dangerouslySetInnerHTML={{
-            __html: markdown.toHTML(this.props.editing ? this.props.editText : this.props.spark.get('text'))
+            __html: this.props.spark.get("cooked")
           }}>
           </div>
           <div className="actions">
@@ -163,10 +174,12 @@ var SparkApp = React.createClass({
   },
 
   onTextChange: function (new_val) {
+    this.state.editing.cook(new_val);
     this.setState({editText: new_val});
   },
 
   onEditClose: function(){
+    if (this.state.editing) this.state.editing.cook();
     this.setState({"editing": null});
   },
 
@@ -175,6 +188,7 @@ var SparkApp = React.createClass({
       this.state.editing.destroy();
     } else{
       this.state.editing.set("text", this.state.editText);
+      this.state.editing.cook();
       this.state.editing.save();
     }
     this.setState({"editing": null});
@@ -182,6 +196,7 @@ var SparkApp = React.createClass({
 
   onEdit: function(spark){
     this.setState({editing: spark, editText: spark.get("text")});
+    $("html").animate({"scrollTop": $("#" + spark.get("id")).offset().top}, 1000);
   },
 
   startNew: function(){
@@ -190,7 +205,7 @@ var SparkApp = React.createClass({
   },
 
   onExpand: function(spark){
-    this.setState({expanded: spark});
+    this.setState({expanded: this.state.expanded != spark ? spark : null});
   },
 
   render: function() {
@@ -202,7 +217,6 @@ var SparkApp = React.createClass({
             <SparkItem
               key={spark.id}
               onEdit={this.onEdit}
-              editText={this.state.editText}
               onExpand={this.onExpand}
               expanded={this.state.expanded == spark}
               editing={this.state.editing == spark}
