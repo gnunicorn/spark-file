@@ -64,12 +64,12 @@ var Editor = React.createClass({
                 onChange={this.onChange}
                 defaultValue={this.props.editText} />
               <div className="actions">
-            <button className="expand-action" onClick={this.props.onSave}>
-              <span className="fa fa-2x fa-check-circle "></span>
-            </button>
-            <button className="expand-action" onClick={this.props.onClose}>
-              <span className="fa fa-2x fa-times-circle-o"></span>
-            </button>
+                <button className="expand-action" onClick={this.props.onSave}>
+                  <span className="fa fa-2x fa-check-circle "></span>
+                </button>
+                <button className="expand-action" onClick={this.props.onClose}>
+                  <span className="fa fa-2x fa-times-circle-o"></span>
+                </button>
               </div>
             </div>
       );
@@ -171,7 +171,7 @@ var SparkApp = React.createClass({
   },
 
   onEditSave: function(){
-    if (!this.state.editText) {
+    if (!this.state.editText || this.state.editText.length <= 1) {
       this.state.editing.destroy();
     } else{
       this.state.editing.set("text", this.state.editText);
