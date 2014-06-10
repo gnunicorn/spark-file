@@ -90,7 +90,7 @@ var SparkItem = React.createClass({
 
   render: function() {
     var classes = Utils.stringifyObjKeys({
-      expanded: this.props.expanded, editing: this.props.editing
+      "spark-item": true, expanded: this.props.expanded, editing: this.props.editing
     });
     return (
       <li className={classes} onClick={this.expand} >

@@ -130,29 +130,29 @@ button {
     max-width: 950px;
 }
 
-#spark-list li {
+#spark-list li.spark-item {
 	position: relative;
 	font-size: 20px;
 	padding: 1em;
 	margin-bottom: 2em;
 }
 
-#spark-list li .edit-action,
-#spark-list li .expand-action {
+#spark-list li.spark-item .edit-action,
+#spark-list li.spark-item .expand-action {
 	display: none;
 }
 
-#spark-list li.editing .edit-action,
-#spark-list li.expanded .expand-action {
+#spark-list li.spark-item.editing .edit-action,
+#spark-list li.spark-item.expanded .expand-action {
 	display: inline-block;
 }
 
 
-#spark-list li:last-child {
+#spark-list li.spark-item:last-child {
 	border-bottom: none;
 }
 
-#spark-list li.editing .edit {
+#spark-list li.spark-item.editing .edit {
 	display: block;
     position: absolute;
     top: 0;
@@ -163,7 +163,7 @@ button {
     padding-right: 90px;
 }
 
-#spark-list li.editing .expanding-clone {
+#spark-list li.spark-item.editing .expanding-clone {
     display: block;
     border: 0 solid;
     visibility: hidden;
@@ -174,12 +174,12 @@ button {
 }
 
 
-#spark-list li span.when {
+#spark-list li.spark-item span.when {
 	color: #ccc;
 	font-size: 15px;
 }
 
-#spark-list li p.spark {
+#spark-list li.spark-item p.spark {
 	word-break: break-word;
 	display: block;
 	line-height: 1.2;
@@ -194,17 +194,17 @@ button {
 	transition: color 0.4s;
 }
 
-#spark-list li.expanded p {
+#spark-list li.spark-item.expanded p {
 	height: auto;
 }
 
-#spark-list li .edit,
-#spark-list li .expanding-clone {
+#spark-list li.spark-item .edit,
+#spark-list li.spark-item .expanding-clone {
 	display: none;
 }
 
-#spark-list li .actions,
-#spark-list li.editing.expanded .actions {
+#spark-list li.spark-item .actions,
+#spark-list li.spark-item.editing.expanded .actions {
 	display: none;
 }
 
@@ -219,7 +219,7 @@ button {
 }
 
 #editor .actions,
-#spark-list li.expanded .actions {
+#spark-list li.spark-item.expanded .actions {
 	display: block;
 	position: absolute;
 	padding: 0.5em;
@@ -230,7 +230,7 @@ button {
 }
 
 
-#spark-list li.editing:last-child {
+#spark-list li.spark-item.editing:last-child {
 	margin-bottom: -1px;
 }
 
