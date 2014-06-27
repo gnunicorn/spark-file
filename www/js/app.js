@@ -150,14 +150,172 @@ var BackboneMixin = {
   }
 };
 
+var SparkHeader = React.createClass({
+
+  getInitialState: function(){
+    return {showBox: false, email: "", password:""};
+  },
+
+  componentDidMount: function(){
+    if (!this.props.user){
+      this.setState({"showBox": "notLoggedIn"})
+    }
+  },
+
+  startLogin: function(){
+    if (this.props.user){
+      this.setState({showBox: "logout"});
+    } else {
+      this.setState({showBox: "showSignIn"});
+    }
+  },
+
+  signInSubmit: function(){
+    this.setState({showBox: "loading"});
+    Backbone.hoodie.account.signIn(this.state.email, this.state.password
+        ).done(function(resp){
+          this.setState({showBox: false});
+        }.bind(this)).fail(function(){
+          this.setState({showBox: "signUpInstead"});
+        }.bind(this));
+  },
+
+  signUp: function(){
+    this.setState({showBox: "loading"});
+    Backbone.hoodie.account.signUp(this.state.email, this.state.password
+      ).done(function(resp){
+          this.setState({showBox: false});
+      }.bind(this)
+      ).fail(function(){
+        this.setState({showBox: "signUpFailed"});
+      }.bind(this));
+  },
+
+  signOut: function(){
+    this.setState({showBox: "loading"});
+    Backbone.hoodie.account.signOut().done(function(){
+      this.setState({showBox: "notLoggedIn"})
+    }.bind(this));
+  },
+
+  onEmailChange: function(ev){
+    this.setState({email: ev.target.value});
+  },
+  onPasswordChange: function(ev){
+    this.setState({password: ev.target.value});
+  },
+
+  dismiss: function() {
+    this.setState({showBox: false});
+  },
+
+  render: function(){
+    var message = null,
+        sparkStyle = {"color": "green", "cursor": "pointer"},
+        sparkTitle = "checking";
+    if (!this.props.user) {
+      sparkStyle["color"] = "rgba(179, 114, 114, 1)";
+    } else {
+      sparkTitle = "you are : "+ this.props.user;
+    }
+
+    switch (this.state.showBox) {
+      case "notLoggedIn":
+        message = (
+                <div className="alert alert-error">
+                    <button className="dismiss" onClick={this.dismiss}>x</button>
+                    <h3>Not logged in</h3>
+                    <p>Without being logged in, the data is only stored locally and won`t be synced accross devices.</p>
+                    <button className="sign-in" onClick={this.startLogin}>Sign in now.</button>
+                </div>
+              );
+        break;
+      case "showSignIn":
+        message = (
+                <div className="alert">
+                    <button className="dismiss" onClick={this.dismiss}>x</button>
+                    <h3>Sign in</h3>
+                    <form onSubmit={this.signInSubmit}>
+                      <label>Email</label><input name="email" onChange={this.onEmailChange} type="email"/>
+                      <label>password</label><input name="password" onChange={this.onPasswordChange} type="password"/>
+                      <button className="sign-in" type="submit">Sign in now.</button>
+                    </form>
+                </div>
+              );
+        break;
+      case "logout":
+        message = (
+                <div className="alert">
+                    <button className="dismiss" onClick={this.dismiss}>x</button>
+                    <h3>You are currently signed in as {this.props.user}</h3>
+                    <button className="sign-out" onClick={this.signOut}>Sign out now.</button>
+                </div>
+              );
+        break;
+      case "loading":
+        message = (
+                <div className="alert">
+                    Loading..
+                </div>
+              );
+        break;
+      case "signUpFailed":
+        message = (
+                <div className="alert alert-error">
+                    <button className="dismiss" onClick={this.dismiss}>x</button>
+                    <h3>Sign up failed</h3>
+                    <p>Please try again with a different name</p>
+                    <button className="sign-in" onClick={this.startLogin}>try again</button>
+                </div>
+              );
+        break;
+      case "signUpInstead":
+        message = (
+                <div className="alert alert-error">
+                    <button className="dismiss" onClick={this.dismiss}>x</button>
+                    <h3>Sign in failed</h3>
+                    <p> how do you want to continue?</p>
+                    <button className="sign-in" onClick={this.startLogin}>try again</button>
+                    <button className="sign-up" onClick={this.signUp}>sign up with that account</button>
+                </div>
+              );
+        break;
+      }
+
+    return (
+        <header id="header">
+              <h1 className="app-title">sparks<span title={sparkTitle} style={sparkStyle} onClick={this.startLogin}>*</span></h1>
+              {message}
+        </header>
+      );
+  }
+
+});
+
 var SparkApp = React.createClass({
   mixins: [BackboneMixin],
   getInitialState: function() {
-    return {editing: null, expanded: null, editText: ""};
+    return {editing: null, expanded: null,
+        user: Backbone.hoodie.account.username ? Backbone.hoodie.account.username: false,
+        editText: ""};
   },
 
   componentDidMount: function() {
+    var app = this;
+    function userIn(user){
+      app.props.sparks.fetch();
+      app.setState({"user": user});
+    };
+
     this.props.sparks.fetch();
+
+    Backbone.hoodie.account.on('authenticated', userIn);
+    Backbone.hoodie.account.on('signin', userIn);
+    Backbone.hoodie.account.on('signup', userIn);
+    Backbone.hoodie.account.on('signout', function(){
+      this.setState({"user": null});
+      this.props.sparks.fetch();
+    }.bind(this));
   },
 
   componentDidUpdate: function() {
@@ -260,9 +418,7 @@ var SparkApp = React.createClass({
       <div>
         {editor}
         <section id="sparkapp" className={classNames}>
-          <header id="header">
-            <h1 className="app-title">sparks*</h1>
-          </header>
+          <SparkHeader user={this.state.user} />
           {main}
           {footer}
         </section>

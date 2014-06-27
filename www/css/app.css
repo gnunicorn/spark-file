@@ -275,6 +275,38 @@ button {
 	color: inherit;
 }
 
+.alert {
+  width: 45%;
+  margin: 20px auto;
+  border: dashed 1px white;
+  border-radius: 10px;
+  background: rgba(222, 217, 115, 1);
+  color: #333;
+  padding: 10px;
+}
+
+.alert-error {
+  background: rgba(179, 114, 114, 1);
+  color: white;
+}
+
+.alert button {
+  border: 1px solid white;
+  margin: 5px;
+  color: white;
+  padding: 3px;
+  border-radius: 5px;
+}
+
+.alert button.dismiss {
+  float: right;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 15px;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+}
 
 .hidden {
 	display: none;
