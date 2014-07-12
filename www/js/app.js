@@ -31,6 +31,15 @@ var Spark = Backbone.Model.extend({
   }
 });
 
+var WELCOME_SPARKS = [
+  new Spark({
+    text: "#A spark-file App with markdown support\n\n![How do rich editing?](/images/rich-editing.jpg)\n\n![Use markdown](/images/use-markdown.jpg)"
+  }),
+  new Spark({
+    text: '#Spark-Files: a tool to track your daily ideas during spark moments\n\nReference: [Steven Johnson`s "The Spark File"  Blog Post](https://medium.com/the-writers-room/the-spark-file-8d6e7df7ae58)\n\n![Sparkfile all the things](/images/sparkfile-things.jpg)\n'
+  })
+]
+
 var SparkList = Backbone.Collection.extend({
 
   // Reference to this collection's model.
@@ -302,20 +311,28 @@ var SparkApp = React.createClass({
 
   componentDidMount: function() {
     var app = this;
+    function populate_if_empty(sparks){
+      if (sparks.length === 0){
+        app.props.sparks.add(WELCOME_SPARKS);
+      }
+    };
+
     function userIn(user){
-      app.props.sparks.fetch();
+      app.props.sparks.reset();
+      app.props.sparks.fetch().then(populate_if_empty);
       app.setState({"user": user});
     };
 
-    this.props.sparks.fetch();
+    this.props.sparks.fetch().then(populate_if_empty);
 
     Backbone.hoodie.account.on('authenticated', userIn);
     Backbone.hoodie.account.on('signin', userIn);
     Backbone.hoodie.account.on('signup', userIn);
     Backbone.hoodie.account.on('signout', function(){
-      this.setState({"user": null});
-      this.props.sparks.fetch();
-    }.bind(this));
+      app.setState({"user": null});
+      app.props.sparks.reset();
+      app.props.sparks.fetch().then(populate_if_empty);
+    });
   },
 
   componentDidUpdate: function() {
